@@ -1,76 +1,49 @@
-name: Release & Publish (Lerna)
+name: Publish Packages
 
 on:
   workflow_dispatch:
     inputs:
-      release-type:
-        description: "Release type"
-        required: true
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
-          - alpha
-          - beta
-        default: patch
-
-permissions:
-  contents: write
-  id-token: write   # REQUIRED for npm Trusted Publisher
+      dist-tag:
+        description: 'NPM dist-tag (latest, beta, dev, etc.)'
+        required: false
+        default: 'latest'
 
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure git author
+      - name: Setup Node.js for GitHub Packages
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@awazorg'
+
+      - name: Configure Git
         run: |
           git config user.name "Rahul Radhakrishnan"
           git config user.email "rahulrkr@hotmail.com"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org/
-
-      - name: Install dependencies
+      - name: Install dependencies (root + workspaces)
         run: npm ci
 
-      - name: Build
-        run: npm run build --if-present
+      - name: Build packages
+        run: npm run build
 
-      - name: Version packages
+      - name: Publish to GitHub Packages
         run: |
-          TYPE="${{ inputs.release-type }}"
-
-          if [[ "$TYPE" == "alpha" || "$TYPE" == "beta" ]]; then
-            npx lerna version prerelease \
-              --preid=$TYPE \
-              --yes \
-              --no-push
-          else
-            npx lerna version $TYPE \
-              --yes \
-              --no-push
-          fi
-
-      - name: Publish packages
-        run: |
-          TYPE="${{ inputs.release-type }}"
-
-          if [[ "$TYPE" == "alpha" || "$TYPE" == "beta" ]]; then
-            npx lerna publish from-package \
-              --dist-tag $TYPE \
-              --yes
-          else
-            npx lerna publish from-package --yes
-          fi
-
-      - name: Push changes
-        run: |
-          git push --follow-tags
+          npx lerna publish \
+            --yes \
+            --no-private \
+            --dist-tag ${{ github.event.inputs.dist-tag }} \

@@ -42,14 +42,14 @@
   "author": "Rahul Radhakrishnan",
   "license": "MIT",
   "peerDependencies": {
-    "@flow-stack/core": "^1.0.0"
+    "@flow-stack/core": "^0.0.0"
   },
   "dependencies": {
     "undici": "^7.16.0",
     "undici-oidc-interceptor": "^0.8.0"
   },
   "devDependencies": {
-    "@flow-stack/core": "^1.0.0",
+    "@flow-stack/core": "^0.0.0",
     "@types/node": "^20.0.0",
     "borp": "^0.21.0",
     "ts-node": "^10.9.2",

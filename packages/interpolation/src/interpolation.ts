@@ -1,12 +1,12 @@
 import jsonata from 'jsonata';
-import type { OrchestrationContext } from './types.js';
+import type { InterpolationContext } from './types.js';
 
 /**
  * Recursively interpolates all string values in an object using JSONata
  * Supports direct JSONata expressions wrapped in curly braces: {expression}
  * Also supports {-expression-} for complex expressions with nested braces
  *
- * The entire OrchestrationContext is available as the root object for evaluation.
+ * The entire context is available as the root object for evaluation.
  *
  * Supports all JSONata features:
  * - Path access: {request.body.userId}
@@ -23,7 +23,7 @@ import type { OrchestrationContext } from './types.js';
  */
 export async function interpolateObject(
   obj: any,
-  context: OrchestrationContext
+  context: InterpolationContext
 ): Promise<any> {
   if (obj === null || obj === undefined) {
     return obj;
@@ -92,7 +92,7 @@ export function buildQueryString(query: Record<string, string>): string {
  */
 async function interpolateStringAsync(
   value: string,
-  context: OrchestrationContext
+  context: InterpolationContext
 ): Promise<string> {
   let result = value;
 
@@ -145,7 +145,7 @@ async function interpolateStringAsync(
  */
 async function evaluateJSONataAsync(
   expression: string,
-  context: OrchestrationContext
+  context: InterpolationContext
 ): Promise<any> {
   try {
     const expr = jsonata(expression);

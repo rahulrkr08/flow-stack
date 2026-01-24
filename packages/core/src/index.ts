@@ -15,12 +15,12 @@ export {
 // Service executor for custom type (built-in)
 export { executeCustomService } from './custom-executor.js';
 
-// Utility functions
+// Utility functions (re-exported from @flow-stack/interpolation)
 export {
   interpolateObject,
   cookiesToHeader,
   buildQueryString,
-} from './interpolation.js';
+} from '@flow-stack/interpolation';
 
 // Diagnostic channels and emitters
 export {

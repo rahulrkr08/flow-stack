@@ -1,7 +1,7 @@
 {
-  "name": "@flow-stack/core",
+  "name": "@flow-stack/interpolation",
   "version": "0.1.0",
-  "description": "A plugin-based workflow engine that orchestrates services with custom handlers and extensible plugins.",
+  "description": "JSONata-based interpolation utilities for @flow-stack",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "type": "module",
@@ -12,9 +12,6 @@
       "default": "./dist/src/index.js"
     }
   },
-  "publishConfig": {
-    "access": "public"
-  },
   "files": [
     "src/**",
     "dist/**/*.js",
@@ -24,6 +21,9 @@
     "README.md",
     "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc",
     "test": "borp --coverage tests/*.test.ts --coverage-exclude '**/node_modules/**' --coverage-exclude '**/tests/**'",
@@ -31,22 +31,17 @@
     "prepublishOnly": "npm run build"
   },
   "keywords": [
-    "orchestrator",
-    "workflow",
-    "service",
-    "plugin",
-    "custom",
-    "handler",
-    "async",
-    "dependency",
+    "flow-stack",
+    "interpolation",
     "jsonata",
-    "flow"
+    "template",
+    "orchestrator",
+    "workflow"
   ],
   "author": "Rahul Radhakrishnan",
   "license": "MIT",
   "dependencies": {
-    "@flow-stack/interpolation": "^0.1.0",
-    "async-flow-orchestrator": "^1.4.0"
+    "jsonata": "^2.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
@@ -60,11 +55,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rahulrkr08/flow-stack.git",
-    "directory": "packages/core"
+    "directory": "packages/interpolation"
   },
   "bugs": {
     "url": "https://github.com/rahulrkr08/flow-stack/issues"
   },
-  "homepage": "https://github.com/rahulrkr08/flow-stack/tree/main/packages/core#readme",
-  "gitHead": "8ee106025c5371943d21aade0963084367d60556"
+  "homepage": "https://github.com/rahulrkr08/flow-stack/tree/main/packages/interpolation#readme"
 }

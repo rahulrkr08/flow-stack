@@ -7,7 +7,7 @@ import type {
   CustomServiceConfig,
   BaseServiceConfig,
 } from './types.js';
-import { interpolateObject } from './interpolation.js';
+import { interpolateObject } from '@flow-stack/interpolation';
 import { executeCustomService } from './custom-executor.js';
 import { getPlugin } from './plugin-registry.js';
 

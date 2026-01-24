@@ -1,0 +1,40 @@
+{
+  "name": "@workflow-stack/flow-stack",
+  "version": "0.0.0",
+  "private": true,
+  "description": "A plugin-based workflow engine that orchestrates services with custom handlers and extensible plugins.",
+  "keywords": [
+    "orchestrator",
+    "workflow",
+    "service",
+    "plugin",
+    "monorepo",
+    "lerna"
+  ],
+  "homepage": "https://github.com/rahulrkr08/flow-stack#readme",
+  "bugs": {
+    "url": "https://github.com/rahulrkr08/flow-stack/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rahulrkr08/flow-stack.git"
+  },
+  "license": "MIT",
+  "author": "Rahul Radhakrishnan",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "lerna run build",
+    "test": "lerna run test --stream",
+    "clean": "lerna run clean && lerna clean --yes",
+    "lint": "lerna run lint",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "lerna": "^8.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

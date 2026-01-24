@@ -1,0 +1,30 @@
+{
+  "packages": [
+    "packages/*"
+  ],
+  "version": "0.2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "command": {
+    "publish": {
+      "conventionalCommits": true,
+      "message": "chore(release): publish",
+      "allowBranch": [
+        "master",
+        "main"
+      ],
+      "ignoreChanges": [
+        "**/*.md",
+        "**/test/**",
+        "**/tests/**",
+        "**/__tests__/**"
+      ]
+    },
+    "version": {
+      "conventionalCommits": true,
+      "changelogPreset": "conventional-changelog-angular",
+      "message": "chore(release): version packages"
+    }
+  }
+}

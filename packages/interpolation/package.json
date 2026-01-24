@@ -1,0 +1,65 @@
+{
+  "name": "@workflow-stack/interpolation",
+  "version": "0.2.0",
+  "description": "JSONata-based interpolation utilities for @workflow-stack",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "type": "module",
+  "private": false,
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "src/**",
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "borp --coverage tests/*.test.ts --coverage-exclude '**/node_modules/**' --coverage-exclude '**/tests/**'",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "flow-stack",
+    "interpolation",
+    "jsonata",
+    "template",
+    "orchestrator",
+    "workflow"
+  ],
+  "author": "Rahul Radhakrishnan",
+  "license": "MIT",
+  "dependencies": {
+    "jsonata": "^2.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "borp": "^0.21.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rahulrkr08/flow-stack.git",
+    "directory": "packages/interpolation"
+  },
+  "bugs": {
+    "url": "https://github.com/rahulrkr08/flow-stack/issues"
+  },
+  "homepage": "https://github.com/rahulrkr08/flow-stack/tree/main/packages/interpolation#readme",
+  "gitHead": "1b257c703cfb44a4dc6ece5ffdf1ca5cfe4ec895"
+}

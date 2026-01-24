@@ -1,0 +1,76 @@
+name: Release & Publish (Lerna)
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-type:
+        description: "Release type"
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - alpha
+          - beta
+        default: patch
+
+permissions:
+  contents: write
+  id-token: write   # REQUIRED for npm Trusted Publisher
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure git author
+        run: |
+          git config user.name "Rahul Radhakrishnan"
+          git config user.email "rahulrkr@hotmail.com"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build --if-present
+
+      - name: Version packages
+        run: |
+          TYPE="${{ inputs.release-type }}"
+
+          if [[ "$TYPE" == "alpha" || "$TYPE" == "beta" ]]; then
+            npx lerna version prerelease \
+              --preid=$TYPE \
+              --yes \
+              --no-push
+          else
+            npx lerna version $TYPE \
+              --yes \
+              --no-push
+          fi
+
+      - name: Publish packages
+        run: |
+          TYPE="${{ inputs.release-type }}"
+
+          if [[ "$TYPE" == "alpha" || "$TYPE" == "beta" ]]; then
+            npx lerna publish from-package \
+              --dist-tag $TYPE \
+              --yes
+          else
+            npx lerna publish from-package --yes
+          fi
+
+      - name: Push changes
+        run: |
+          git push --follow-tags

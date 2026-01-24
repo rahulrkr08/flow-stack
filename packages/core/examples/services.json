@@ -1,0 +1,78 @@
+{
+  "description": "Example service configuration for flow-stack",
+  "services": [
+    {
+      "id": "authenticate",
+      "service": {
+        "type": "rest",
+        "url": "https://api.example.com/auth/verify",
+        "method": "GET",
+        "headers": {
+          "content-type": "application/json"
+        },
+        "cookies": {
+          "sessionId": "{request.cookies.sessionId}"
+        },
+        "timeout": 10000,
+        "fallback": {
+          "data": {
+            "authenticated": false,
+            "message": "Auth service unavailable"
+          }
+        }
+      }
+    },
+    {
+      "id": "fetchUserProfile",
+      "dependsOn": ["authenticate"],
+      "service": {
+        "type": "rest",
+        "url": "https://api.example.com/users/{authenticate.body.userId}",
+        "method": "GET",
+        "headers": {
+          "Authorization": "Bearer {authenticate.body.token}"
+        }
+      }
+    },
+    {
+      "id": "fetchWorkspaces",
+      "dependsOn": ["authenticate"],
+      "service": {
+        "type": "rest",
+        "url": "https://api.example.com/workspaces",
+        "method": "GET",
+        "query": {
+          "userId": "{authenticate.body.userId}",
+          "limit": "10"
+        },
+        "oidc": {
+          "clientId": "{env.OIDC_CLIENT_ID}",
+          "clientSecret": "{env.OIDC_CLIENT_SECRET}",
+          "scope": "{env.OIDC_SCOPE}"
+        }
+      }
+    },
+    {
+      "id": "aggregateResults",
+      "dependsOn": ["fetchUserProfile", "fetchWorkspaces"],
+      "service": {
+        "type": "custom",
+        "comment": "Custom handler defined in code to aggregate REST results"
+      }
+    }
+  ],
+  "notes": {
+    "customServices": "Custom service handlers must be defined in code, not JSON. The JSON configuration shows the structure, but the 'handler' function must be provided programmatically.",
+    "interpolation": "All string values support JSONata interpolation using {expression} syntax.",
+    "types": [
+      {
+        "type": "rest",
+        "description": "HTTP/REST services executed via Undici"
+      },
+      {
+        "type": "custom",
+        "description": "Custom handlers for databases, file systems, message queues, etc."
+      }
+    ]
+  }
+}

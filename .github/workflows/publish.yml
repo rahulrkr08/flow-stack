@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       dist-tag:
-        description: 'NPM dist-tag (latest, beta, dev, etc.)'
+        description: 'NPM dist-tag (latest, next, beta, etc.)'
         required: false
         default: 'latest'
 
@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      packages: write
       id-token: write
 
     steps:
@@ -23,31 +22,31 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js for GitHub Packages
-        uses: actions/setup-node@v5
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@awazorg'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Configure Git
         run: |
           git config user.name "Rahul Radhakrishnan"
           git config user.email "rahulrkr@hotmail.com"
 
-      - name: Install dependencies (root + workspaces)
+      - name: Install dependencies
         run: npm ci
 
       - name: Build packages
         run: npm run build
 
-      - name: Publish to GitHub Packages
+      - name: Run tests
+        run: npm test
+
+      - name: Publish to npm with provenance
+        env:
+          NPM_CONFIG_PROVENANCE: true
         run: |
-          npx lerna publish \
+          npx lerna publish from-package \
             --yes \
             --no-private \
             --dist-tag ${{ github.event.inputs.dist-tag }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_CONFIG_REGISTRY: https://npm.pkg.github.com

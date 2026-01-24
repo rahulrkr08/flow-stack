@@ -8,10 +8,10 @@ describe('Custom Executor', () => {
     it('should execute custom handler and return result', async () => {
       const config: CustomServiceConfig = {
         type: 'custom',
-        handler: async (input, context) => {
+        handler: async (context) => {
           return {
             status: 200,
-            body: { processed: true, serviceId: input.serviceId },
+            body: { processed: true },
           };
         },
       };
@@ -19,9 +19,7 @@ describe('Custom Executor', () => {
       const result = await executeCustomService(config, {}, 'customService1');
 
       assert.strictEqual(result.status, 200);
-      assert.deepStrictEqual(result.body, { processed: true, serviceId: 'customService1' });
-      assert.strictEqual(result.metadata?.executionStatus, 'executed');
-      assert.strictEqual(result.metadata?.serviceType, 'custom');
+      assert.deepStrictEqual(result.body, { processed: true });
     });
 
     it('should pass context to custom handler', async () => {
@@ -37,7 +35,7 @@ describe('Custom Executor', () => {
 
       const config: CustomServiceConfig = {
         type: 'custom',
-        handler: async (input, ctx) => {
+        handler: async (ctx) => {
           return {
             status: 200,
             body: {
@@ -57,7 +55,7 @@ describe('Custom Executor', () => {
     it('should handle synchronous handlers', async () => {
       const config: CustomServiceConfig = {
         type: 'custom',
-        handler: (input, context) => {
+        handler: (context) => {
           return {
             status: 200,
             body: { sync: true },
@@ -81,7 +79,7 @@ describe('Custom Executor', () => {
 
       const config: CustomServiceConfig = {
         type: 'custom',
-        handler: async (input, context) => {
+        handler: async (context) => {
           const userId = context.request?.body?.userId;
           const user = mockDatabase[userId];
 
@@ -112,7 +110,7 @@ describe('Custom Executor', () => {
     it('should support file system-like operations', async () => {
       const config: CustomServiceConfig = {
         type: 'custom',
-        handler: async (input, context) => {
+        handler: async (context) => {
           // Simulate reading a config file
           const configData = {
             appName: 'flow-stack',
@@ -138,7 +136,7 @@ describe('Custom Executor', () => {
 
       const config: CustomServiceConfig = {
         type: 'custom',
-        handler: async (input, context) => {
+        handler: async (context) => {
           const message = context.request?.body?.message;
           messages.push(message);
 
@@ -216,28 +214,14 @@ describe('Custom Executor', () => {
     });
   });
 
-  describe('Result normalization', () => {
-    it('should normalize result with missing status', async () => {
+  describe('Result passthrough', () => {
+    it('should return handler result as-is', async () => {
       const config: CustomServiceConfig = {
         type: 'custom',
         handler: async () => ({
-          status: undefined as any,
+          status: 201,
           body: { data: 'test' },
-        }),
-      };
-
-      const result = await executeCustomService(config, {}, 'normalizeService');
-
-      assert.strictEqual(result.status, null);
-      assert.deepStrictEqual(result.body, { data: 'test' });
-    });
-
-    it('should preserve custom metadata from handler', async () => {
-      const config: CustomServiceConfig = {
-        type: 'custom',
-        handler: async () => ({
-          status: 200,
-          body: { data: 'test' },
+          headers: { 'x-custom': 'value' },
           metadata: {
             executionStatus: 'executed' as const,
             customField: 'customValue',
@@ -245,10 +229,13 @@ describe('Custom Executor', () => {
         }),
       };
 
-      const result = await executeCustomService(config, {}, 'metadataService');
+      const result = await executeCustomService(config, {}, 'passthroughService');
 
+      assert.strictEqual(result.status, 201);
+      assert.deepStrictEqual(result.body, { data: 'test' });
+      assert.deepStrictEqual(result.headers, { 'x-custom': 'value' });
       assert.strictEqual(result.metadata?.executionStatus, 'executed');
-      assert.strictEqual(result.metadata?.serviceType, 'custom');
+      assert.strictEqual((result.metadata as any)?.customField, 'customValue');
     });
   });
 });

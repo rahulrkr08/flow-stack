@@ -65,7 +65,7 @@ describe('Orchestrator', () => {
           id: 'customService',
           service: {
             type: 'custom',
-            handler: async (input, context) => {
+            handler: async (context) => {
               return {
                 status: 200,
                 body: { message: 'Hello from custom handler' },
@@ -79,7 +79,6 @@ describe('Orchestrator', () => {
 
       assert.strictEqual(result.services.customService.status, 200);
       assert.deepStrictEqual(result.services.customService.body, { message: 'Hello from custom handler' });
-      assert.strictEqual(result.services.customService.metadata?.serviceType, 'custom');
     });
 
     it('should execute custom services with dependencies', async () => {
@@ -99,7 +98,7 @@ describe('Orchestrator', () => {
           dependsOn: ['generateId'],
           service: {
             type: 'custom',
-            handler: async (input, context) => {
+            handler: async (context) => {
               const generatedId = context.generateId?.body?.id;
               return {
                 status: 200,
@@ -117,8 +116,7 @@ describe('Orchestrator', () => {
       assert.strictEqual(result.services.useId.body.processed, true);
     });
 
-    it('should pass serviceId and context to custom handler', async () => {
-      let receivedInput: any;
+    it('should pass context to custom handler', async () => {
       let receivedContext: any;
 
       const services: ServiceBlock[] = [
@@ -126,8 +124,7 @@ describe('Orchestrator', () => {
           id: 'testService',
           service: {
             type: 'custom',
-            handler: async (input, context) => {
-              receivedInput = input;
+            handler: async (context) => {
               receivedContext = context;
               return { status: 200, body: {} };
             },
@@ -142,8 +139,6 @@ describe('Orchestrator', () => {
 
       await runOrchestration(services, context);
 
-      assert.strictEqual(receivedInput.serviceId, 'testService');
-      assert.ok(receivedInput.context);
       assert.strictEqual(receivedContext.request?.body?.test, true);
       assert.strictEqual(receivedContext.env?.API_KEY, 'secret');
     });
@@ -242,7 +237,7 @@ describe('Orchestrator', () => {
           dependsOn: ['mockService'],
           service: {
             type: 'custom',
-            handler: async (input, context) => ({
+            handler: async (context) => ({
               status: 200,
               body: {
                 mockResult: context.mockService?.body,
@@ -255,9 +250,7 @@ describe('Orchestrator', () => {
 
       const result = await runOrchestration(services, {});
 
-      assert.strictEqual(result.services.prepareData.metadata?.serviceType, 'custom');
       assert.strictEqual(result.services.mockService.metadata?.serviceType, 'mock');
-      assert.strictEqual(result.services.finalProcess.metadata?.serviceType, 'custom');
       assert.strictEqual(result.services.finalProcess.body.combined, true);
       assert.deepStrictEqual(result.services.finalProcess.body.mockResult, { fromPrepare: 42 });
     });
@@ -353,7 +346,6 @@ describe('Orchestrator', () => {
       const result = await runOrchestration(services, {});
 
       assert.strictEqual(result.services.conditionalService.body.executed, true);
-      assert.strictEqual(result.services.conditionalService.metadata?.executionStatus, 'executed');
     });
   });
 

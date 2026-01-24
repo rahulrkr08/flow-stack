@@ -158,7 +158,7 @@ describe('REST Plugin', () => {
             dependsOn: ['prepareData', 'fetchFromApi'],
             service: {
               type: 'custom',
-              handler: async (input, context) => {
+              handler: async (context) => {
                 const preparedData = context.prepareData?.body;
                 const apiData = context.fetchFromApi?.body;
                 return {
@@ -174,9 +174,12 @@ describe('REST Plugin', () => {
           },
         ], {});
 
-        assert.strictEqual(result.services.prepareData.metadata?.serviceType, 'custom');
+        // Custom handlers return results as-is, so no metadata unless handler provides it
+        assert.strictEqual(result.services.prepareData.metadata, undefined);
+        // REST plugin sets metadata with serviceType
         assert.strictEqual(result.services.fetchFromApi.metadata?.serviceType, 'rest');
-        assert.strictEqual(result.services.processResults.metadata?.serviceType, 'custom');
+        // Custom handlers return results as-is
+        assert.strictEqual(result.services.processResults.metadata, undefined);
 
         assert.strictEqual(result.services.processResults.body.combined, true);
         assert.strictEqual(result.services.processResults.body.userId, 'user-456');

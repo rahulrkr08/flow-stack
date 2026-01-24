@@ -42,14 +42,13 @@
   "author": "Rahul Radhakrishnan",
   "license": "MIT",
   "peerDependencies": {
-    "@flow-stack/core": "^0.0.0"
+    "@flow-stack/core": ">=0.1.0"
   },
   "dependencies": {
     "undici": "^7.16.0",
     "undici-oidc-interceptor": "^0.8.0"
   },
   "devDependencies": {
-    "@flow-stack/core": "^0.0.0",
     "@types/node": "^20.0.0",
     "borp": "^0.21.0",
     "ts-node": "^10.9.2",
@@ -67,5 +66,5 @@
     "url": "https://github.com/rahulrkr08/flow-stack/issues"
   },
   "homepage": "https://github.com/rahulrkr08/flow-stack/tree/main/packages/rest#readme",
-  "gitHead": "e7e86d01393897389d32329ba2b8dbe1b6f1a759"
+  "gitHead": "8ee106025c5371943d21aade0963084367d60556"
 }

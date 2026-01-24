@@ -20,20 +20,11 @@ export interface CustomServiceConfig extends BaseServiceConfig {
 
 /**
  * Custom handler function type
- * Receives interpolated input and context, returns ServiceResult
+ * Receives context and returns ServiceResult
  */
 export type CustomHandler = (
-  input: CustomHandlerInput,
   context: OrchestrationContext
 ) => Promise<ServiceResult> | ServiceResult;
-
-/**
- * Input passed to custom handlers
- */
-export interface CustomHandlerInput {
-  serviceId: string;
-  context: OrchestrationContext;
-}
 
 /**
  * Service configuration - base type that plugins can extend

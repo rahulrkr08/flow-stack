@@ -14,33 +14,13 @@ export async function executeCustomService(
   emitServiceStart(serviceId, 'custom', null, context);
 
   try {
-    // Execute the custom handler with input and context
-    const result = await config.handler(
-      {
-        serviceId,
-        context,
-      },
-      context
-    );
-
-    // Ensure result has required fields
-    const normalizedResult: ServiceResult = {
-      status: result.status ?? null,
-      body: result.body,
-      headers: result.headers,
-      cookies: result.cookies,
-      error: result.error,
-      metadata: {
-        ...result.metadata,
-        executionStatus: result.metadata?.executionStatus || 'executed',
-        serviceType: 'custom',
-      },
-    };
+    // Execute the custom handler with context only
+    const result = await config.handler(context);
 
     const processingTime = Date.now() - startTime;
-    emitServiceComplete(serviceId, 'custom', null, context, processingTime, normalizedResult.status);
+    emitServiceComplete(serviceId, 'custom', null, context, processingTime, result.status);
 
-    return normalizedResult;
+    return result;
   } catch (error: any) {
     const processingTime = Date.now() - startTime;
     emitServiceError(serviceId, 'custom', null, context, processingTime, error);

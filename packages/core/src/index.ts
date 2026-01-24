@@ -36,7 +36,6 @@ export type {
   ServiceConfig,
   CustomServiceConfig,
   CustomHandler,
-  CustomHandlerInput,
   ServiceBlock,
   OrchestrationConfig,
   OrchestrationContext,

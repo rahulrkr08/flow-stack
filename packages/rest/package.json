@@ -1,6 +1,6 @@
 {
   "name": "@flow-stack/rest",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "REST plugin for @flow-stack/core - HTTP service orchestration using Undici",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -67,5 +67,5 @@
     "url": "https://github.com/rahulrkr08/flow-stack/issues"
   },
   "homepage": "https://github.com/rahulrkr08/flow-stack/tree/main/packages/rest#readme",
-  "gitHead": "66b31edca511e01dee299c1c1de4010c51c1a06c"
+  "gitHead": "e7e86d01393897389d32329ba2b8dbe1b6f1a759"
 }

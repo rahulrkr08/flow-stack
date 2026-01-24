@@ -1,6 +1,6 @@
 {
   "name": "@flow-stack/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A plugin-based workflow engine that orchestrates services with custom handlers and extensible plugins.",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",

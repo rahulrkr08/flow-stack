@@ -1,0 +1,71 @@
+{
+  "name": "@flow-stack/rest",
+  "version": "0.0.0",
+  "description": "REST plugin for @flow-stack/core - HTTP service orchestration using Undici",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "type": "module",
+  "private": false,
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    }
+  },
+  "files": [
+    "src/**",
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "borp --coverage tests/*.test.ts --coverage-exclude '**/node_modules/**' --coverage-exclude '**/tests/**'",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "flow-stack",
+    "plugin",
+    "rest",
+    "http",
+    "undici",
+    "orchestrator",
+    "workflow"
+  ],
+  "author": "Rahul Radhakrishnan",
+  "license": "MIT",
+  "peerDependencies": {
+    "@flow-stack/core": "^1.0.0"
+  },
+  "dependencies": {
+    "undici": "^7.16.0",
+    "undici-oidc-interceptor": "^0.8.0"
+  },
+  "devDependencies": {
+    "@flow-stack/core": "^1.0.0",
+    "@types/node": "^20.0.0",
+    "borp": "^0.21.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rahulrkr08/flow-stack.git",
+    "directory": "packages/rest"
+  },
+  "bugs": {
+    "url": "https://github.com/rahulrkr08/flow-stack/issues"
+  },
+  "homepage": "https://github.com/rahulrkr08/flow-stack/tree/main/packages/rest#readme",
+  "gitHead": "66b31edca511e01dee299c1c1de4010c51c1a06c"
+}

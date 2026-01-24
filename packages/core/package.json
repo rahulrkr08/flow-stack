@@ -1,0 +1,70 @@
+{
+  "name": "@flow-stack/core",
+  "version": "0.0.0",
+  "description": "A plugin-based workflow engine that orchestrates services with custom handlers and extensible plugins.",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "type": "module",
+  "private": false,
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "src/**",
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "dist/**/*.d.ts.map",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "borp --coverage tests/*.test.ts --coverage-exclude '**/node_modules/**' --coverage-exclude '**/tests/**'",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "orchestrator",
+    "workflow",
+    "service",
+    "plugin",
+    "custom",
+    "handler",
+    "async",
+    "dependency",
+    "jsonata",
+    "flow"
+  ],
+  "author": "Rahul Radhakrishnan",
+  "license": "MIT",
+  "dependencies": {
+    "async-flow-orchestrator": "^1.4.0",
+    "jsonata": "^2.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "borp": "^0.21.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rahulrkr08/flow-stack.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/rahulrkr08/flow-stack/issues"
+  },
+  "homepage": "https://github.com/rahulrkr08/flow-stack/tree/main/packages/core#readme",
+  "gitHead": "66b31edca511e01dee299c1c1de4010c51c1a06c"
+}

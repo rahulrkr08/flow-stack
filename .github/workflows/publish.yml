@@ -1,0 +1,53 @@
+name: Publish Packages
+
+on:
+  workflow_dispatch:
+    inputs:
+      dist-tag:
+        description: 'NPM dist-tag (latest, beta, dev, etc.)'
+        required: false
+        default: 'latest'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js for GitHub Packages
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@awazorg'
+
+      - name: Configure Git
+        run: |
+          git config user.name "Rahul Radhakrishnan"
+          git config user.email "rahulrkr@hotmail.com"
+
+      - name: Install dependencies (root + workspaces)
+        run: npm ci
+
+      - name: Build packages
+        run: npm run build
+
+      - name: Publish to GitHub Packages
+        run: |
+          npx lerna publish \
+            --yes \
+            --no-private \
+            --dist-tag ${{ github.event.inputs.dist-tag }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_CONFIG_REGISTRY: https://npm.pkg.github.com

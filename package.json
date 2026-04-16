@@ -1,7 +1,6 @@
 {
   "name": "@workflow-stack/flow-stack",
   "version": "0.0.0",
-  "private": true,
   "description": "A plugin-based workflow engine that orchestrates services with custom handlers and extensible plugins.",
   "keywords": [
     "orchestrator",

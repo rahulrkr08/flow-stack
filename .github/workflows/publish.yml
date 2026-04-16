@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      packages: write
       id-token: write
 
     steps:
@@ -45,6 +44,5 @@ jobs:
           npx lerna publish \
             --yes \
             --no-private \
-            --dist-tag ${{ github.event.inputs.dist-tag }} \
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+            --provenance \
+            --dist-tag ${{ github.event.inputs.dist-tag }}

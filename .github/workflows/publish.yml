@@ -44,5 +44,4 @@ jobs:
           npx lerna publish \
             --yes \
             --no-private \
-            --provenance \
             --dist-tag ${{ github.event.inputs.dist-tag }}

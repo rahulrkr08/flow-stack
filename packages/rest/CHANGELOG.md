@@ -3,6 +3,21 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# 0.2.0 (2026-04-16)
+
+
+### Features
+
+* **rest:** add Redis cache store support via undici cache interceptor ([2713722](https://github.com/rahulrkr08/flow-stack/commit/2713722d157b7b38faa2bc2cfb48f2068956e84b))
+
+
+
+## 0.1.1 (2026-01-24)
+
+
+
+
+
 ## 0.1.1 (2026-01-24)
 
 **Note:** Version bump only for package @workflow-stack/rest

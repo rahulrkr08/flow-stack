@@ -1,6 +1,6 @@
 {
   "name": "@workflow-stack/interpolation",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "JSONata-based interpolation utilities for @workflow-stack",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",

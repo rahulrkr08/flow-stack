@@ -51,7 +51,7 @@
     }
   },
   "dependencies": {
-    "undici": "^7.16.0",
+    "undici": "^8.1.0",
     "undici-oidc-interceptor": "^0.8.0"
   },
   "devDependencies": {
@@ -61,7 +61,7 @@
     "typescript": "^5.0.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.19.0"
   },
   "repository": {
     "type": "git",

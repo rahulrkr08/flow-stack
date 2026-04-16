@@ -42,7 +42,13 @@
   "author": "Rahul Radhakrishnan",
   "license": "MIT",
   "peerDependencies": {
-    "@workflow-stack/core": "^0.1.0"
+    "@workflow-stack/core": "^0.1.0",
+    "undici-cache-redis": "^1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "undici-cache-redis": {
+      "optional": true
+    }
   },
   "dependencies": {
     "undici": "^7.16.0",

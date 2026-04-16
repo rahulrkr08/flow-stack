@@ -5,4 +5,4 @@ export { restPlugin } from './plugin.js';
 export { executeRestService } from './rest-executor.js';
 
 // Type definitions
-export type { RestServiceConfig } from './types.js';
+export type { RestServiceConfig, CacheStore } from './types.js';

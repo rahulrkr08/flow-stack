@@ -1,4 +1,4 @@
-import { request as undiciRequest, getGlobalDispatcher } from 'undici';
+import { request as undiciRequest, interceptors, Agent } from 'undici';
 import type { ServiceResult, OrchestrationContext } from '@workflow-stack/core';
 import { emitServiceStart, emitServiceComplete, emitServiceError } from '@workflow-stack/core';
 import type { RestServiceConfig } from './types.js';
@@ -72,19 +72,32 @@ export async function executeRestService(
       options.body = body;
     }
 
-    // Setup OIDC interceptor if configured
+    // Collect interceptors to compose. If any are present, compose them onto a
+    // fresh Agent so they have a real undici Dispatcher to work with (the global
+    // dispatcher may be a mock in test environments).
+    const composedInterceptors: any[] = [];
+
     if (config.oidc) {
       // @ts-expect-error types missing
-      const { createOIDCInterceptor } = await import('undici-oidc-interceptor');
-      const oidcInterceptor = createOIDCInterceptor({
+      const { createOidcInterceptor } = await import('undici-oidc-interceptor');
+      // urls tells the interceptor which origins to attach the Bearer token to.
+      // Default to the origin of the request URL so no extra config is needed.
+      const targetOrigin = new URL(config.url).origin;
+      composedInterceptors.push(createOidcInterceptor({
         clientId: config.oidc.clientId,
         clientSecret: config.oidc.clientSecret,
         scope: config.oidc.scope,
-        tokenUrl: config.oidc.tokenUrl,
-      });
+        idpTokenUrl: config.oidc.idpTokenUrl,
+        urls: config.oidc.urls ?? [targetOrigin],
+      }));
+    }
 
-      // Compose OIDC interceptor with the global dispatcher
-      options.dispatcher = getGlobalDispatcher().compose(oidcInterceptor);
+    if (config.cacheStore) {
+      composedInterceptors.push(interceptors.cache({ store: config.cacheStore as any }));
+    }
+
+    if (composedInterceptors.length > 0) {
+      options.dispatcher = new Agent().compose(composedInterceptors);
     }
 
     // Execute HTTP request

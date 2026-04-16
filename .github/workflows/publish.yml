@@ -13,37 +13,36 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      packages: write
-      id-token: write
+      id-token: write # CRITICAL: Required for OIDC
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js for GitHub Packages
+      - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '22'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@workflow-stack'
+          node-version: '24' # Node 24 fixes several silent OIDC 404 bugs
 
       - name: Configure Git
         run: |
           git config user.name "Rahul Radhakrishnan"
           git config user.email "rahulrkr@hotmail.com"
 
-      - name: Install dependencies (root + workspaces)
+      - name: Install dependencies
         run: npm ci
 
       - name: Build packages
         run: npm run build
 
-      - name: Publish to GitHub Packages
+      - name: Publish to npm
         run: |
-          npx lerna publish \
-            --yes \
-            --no-private \
-            --dist-tag ${{ github.event.inputs.dist-tag }} \
+          # 1. Update versions & create tags (only if there are changes)
+          npx lerna version --yes --message "chore(release): publish" || echo "No changes to version"
+          
+          # 2. Force native npm publish via lerna exec.
+          # The '--' ensures npm correctly identifies 'latest' as a tag, not a package name.
+          npx lerna exec --no-private -- \
+            npm publish --access public --tag ${{ github.event.inputs.dist-tag }} --provenance

@@ -97,7 +97,7 @@ export async function executeRestService(
     }
 
     if (composedInterceptors.length > 0) {
-      options.dispatcher = new Agent().compose(composedInterceptors);
+      options.dispatcher = new Agent({ allowH2: false }).compose(composedInterceptors);
     }
 
     // Execute HTTP request

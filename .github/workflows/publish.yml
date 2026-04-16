@@ -23,12 +23,11 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js for GitHub Packages
+      - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
           node-version: '22'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@workflow-stack'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Configure Git
         run: |
@@ -41,9 +40,11 @@ jobs:
       - name: Build packages
         run: npm run build
 
-      - name: Publish to GitHub Packages
+      - name: Publish to npm
         run: |
           npx lerna publish \
             --yes \
             --no-private \
             --dist-tag ${{ github.event.inputs.dist-tag }} \
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -41,7 +41,6 @@ jobs:
 
       - name: Publish to npm
         run: |
-          npx lerna publish \
-            --yes \
-            --no-private \
-            --dist-tag ${{ github.event.inputs.dist-tag }}
+          # Use lerna exec to leverage native npm OIDC support
+          npx lerna exec --no-private -- \
+            npm publish --access public --dist-tag ${{ github.event.inputs.dist-tag }}

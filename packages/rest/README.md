@@ -48,6 +48,7 @@ interface RestServiceConfig {
   query?: Record<string, string>;
   body?: any;
   timeout?: number;
+  cacheStore?: CacheStore;
   oidc?: {
     clientId: string;
     clientSecret: string;
@@ -168,6 +169,98 @@ const services = [
   }
 }
 ```
+
+### HTTP Response Caching with `cacheStore`
+
+The `cacheStore` option enables HTTP response caching via undici's built-in [cache interceptor](https://undici.nodejs.org/#/docs/api/CacheStore). When provided, responses with appropriate `Cache-Control` headers are stored and served from the cache on subsequent requests, avoiding redundant network calls.
+
+Any object implementing undici's `CacheStore` interface can be used:
+
+- **`MemoryCacheStore`** (from `undici`) — in-memory cache, useful for testing and short-lived processes.
+- **`RedisCacheStore`** (from `undici-cache-redis`) — Redis-backed cache for production use across multiple instances.
+
+#### In-Memory Cache (Testing / Development)
+
+```javascript
+import undici from 'undici';
+
+const store = new undici.cacheStores.MemoryCacheStore();
+
+const services = [
+  {
+    id: 'fetchUser',
+    service: {
+      type: 'rest',
+      url: 'https://api.example.com/users/1',
+      method: 'GET',
+      cacheStore: store,
+    }
+  }
+];
+
+const result = await runOrchestration(services, {});
+// Subsequent calls with the same config will be served from cache
+// if the response includes a Cache-Control header (e.g. max-age=300)
+```
+
+#### Redis Cache (Production)
+
+```bash
+npm install undici-cache-redis
+```
+
+```javascript
+import { RedisCacheStore } from 'undici-cache-redis';
+
+const store = new RedisCacheStore({
+  clientOpts: { host: 'localhost', port: 6379 }
+});
+
+const services = [
+  {
+    id: 'fetchUser',
+    service: {
+      type: 'rest',
+      url: 'https://api.example.com/users/1',
+      method: 'GET',
+      cacheStore: store,
+    }
+  }
+];
+```
+
+#### Sharing a Cache Store Across Services
+
+You can share a single store instance across multiple services so they benefit from the same cache:
+
+```javascript
+import undici from 'undici';
+
+const sharedCache = new undici.cacheStores.MemoryCacheStore();
+
+const services = [
+  {
+    id: 'fetchUser',
+    service: {
+      type: 'rest',
+      url: 'https://api.example.com/users/1',
+      method: 'GET',
+      cacheStore: sharedCache,
+    }
+  },
+  {
+    id: 'fetchProfile',
+    service: {
+      type: 'rest',
+      url: 'https://api.example.com/users/1/profile',
+      method: 'GET',
+      cacheStore: sharedCache,
+    }
+  }
+];
+```
+
+> **Note:** Caching only applies when the server's response includes cache-friendly headers (e.g. `Cache-Control: max-age=300`). Responses without caching headers will not be stored.
 
 ## Response Handling
 

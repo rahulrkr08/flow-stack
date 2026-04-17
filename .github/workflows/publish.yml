@@ -13,21 +13,18 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      id-token: write # Required for OIDC authentication
+      id-token: write # CRITICAL: Required for OIDC
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
         with:
-          node-version: '22'
-          # We remove registry-url here because OIDC works best 
-          # when npm discovers the registry configuration itself.
+          node-version: '24' # Node 24 fixes several silent OIDC 404 bugs
 
       - name: Configure Git
         run: |
@@ -42,14 +39,10 @@ jobs:
 
       - name: Publish to npm
         run: |
-          # 1. Update versions and tags (already done in your last run, 
-          # but keep for future automation).
+          # 1. Update versions & create tags (only if there are changes)
           npx lerna version --yes --message "chore(release): publish" || echo "No changes to version"
-
-          # 2. Bypass Lerna's internal publisher and use native NPM CLI.
-          # This forces NPM to handle the OIDC handshake directly.
-          # We use --no-prepublishOnly to avoid the infinite build loop 
-          # seen in your last log.
+          
+          # 2. Force native npm publish via lerna exec.
+          # The '--' ensures npm correctly identifies 'latest' as a tag, not a package name.
           npx lerna exec --no-private -- \
-            npm publish --access public --dist-tag ${{ github.event.inputs.dist-tag }}
-
+            npm publish --access public --dist-tag ${{ github.event.inputs.dist-tag }} --provenance

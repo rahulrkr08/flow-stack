@@ -3,6 +3,28 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.1.6 (2026-04-17)
+
+
+### Bug Fixes
+
+* **publish:** switch target registry from GitHub Packages to npmjs ([618d0c0](https://github.com/rahulrkr08/flow-stack/commit/618d0c0dd81933b0decbf59b82b69216f65541e5))
+
+
+
+
+
+## 0.1.6 (2026-04-17)
+
+
+### Bug Fixes
+
+* **publish:** switch target registry from GitHub Packages to npmjs ([618d0c0](https://github.com/rahulrkr08/flow-stack/commit/618d0c0dd81933b0decbf59b82b69216f65541e5))
+
+
+
+
+
 ## 0.1.5 (2026-04-17)
 
 

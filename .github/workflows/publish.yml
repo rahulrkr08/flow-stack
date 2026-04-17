@@ -45,4 +45,4 @@ jobs:
           # 2. Force native npm publish via lerna exec.
           # The '--' ensures npm correctly identifies 'latest' as a tag, not a package name.
           npx lerna exec --no-private -- \
-            npm publish --access public --dist-tag ${{ github.event.inputs.dist-tag }} --provenance
+            npm publish --access public --tag ${{ github.event.inputs.dist-tag }} --provenance

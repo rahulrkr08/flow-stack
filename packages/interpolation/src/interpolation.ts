@@ -58,6 +58,13 @@ export async function interpolateObject(
   }
 
   if (typeof obj === 'object') {
+    // Preserve class instances — their methods live on the prototype and
+    // won't survive reconstruction via Object.entries / new plain object.
+    const proto = Object.getPrototypeOf(obj);
+    if (proto !== Object.prototype && proto !== null) {
+      return obj;
+    }
+    
     const result: any = {};
     for (const [key, value] of Object.entries(obj)) {
       result[key] = await interpolateObject(value, context);

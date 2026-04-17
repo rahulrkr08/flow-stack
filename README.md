@@ -92,6 +92,34 @@ const result = await runOrchestration(services, {
 });
 ```
 
+### REST with HTTP Response Caching
+
+```javascript
+import { runOrchestration, registerPlugin } from '@workflow-stack/core';
+import { restPlugin } from '@workflow-stack/rest';
+import undici from 'undici';
+
+registerPlugin(restPlugin);
+
+// Use undici's built-in MemoryCacheStore (or RedisCacheStore from undici-cache-redis for production)
+const cacheStore = new undici.cacheStores.MemoryCacheStore();
+
+const services = [
+  {
+    id: 'fetchUser',
+    service: {
+      type: 'rest',
+      url: 'https://api.example.com/users/1',
+      method: 'GET',
+      cacheStore, // responses with Cache-Control headers will be cached
+    }
+  }
+];
+
+// First call hits the server; subsequent calls are served from cache
+const result = await runOrchestration(services, {});
+```
+
 ### Mixed Services with Dependencies
 
 ```javascript

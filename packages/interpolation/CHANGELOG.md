@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## 0.1.8 (2026-04-17)
+
+
+### Bug Fixes
+
+* **interpolation:** preserve class instances during object interpolation ([#6](https://github.com/rahulrkr08/flow-stack/issues/6)) ([9c738a5](https://github.com/rahulrkr08/flow-stack/commit/9c738a5f9ca7b901daa700c45af3f4024beea4a0))
+
+
+
+
+
 ## 0.1.7 (2026-04-17)
 
 

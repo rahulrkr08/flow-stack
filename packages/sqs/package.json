@@ -1,6 +1,6 @@
 {
   "name": "@workflow-stack/sqs",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "SQS plugin for @workflow-stack/core - AWS SQS message publishing orchestration",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",

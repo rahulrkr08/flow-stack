@@ -42,4 +42,4 @@ jobs:
       - name: Publish to npm
         run: |
           # Use -- to separate lerna flags from the command being executed
-          npx lerna exec --no-private -- npm publish --access public --dist-tag ${{ github.event.inputs.dist-tag }}
+          npx lerna exec --no-private -- npx lerna publish --access public --dist-tag ${{ github.event.inputs.dist-tag }}

@@ -8,11 +8,12 @@ import { MockServer } from './helpers.js';
 const { cacheStores } = undici;
 
 describe('Cache Store Integration', () => {
-  let originalDispatcher: Dispatcher;
+  let originalDispatcher: Dispatcher | undefined;
 
   afterEach(() => {
     if (originalDispatcher) {
       setGlobalDispatcher(originalDispatcher);
+      originalDispatcher = undefined;
     }
   });
   it('should accept a cacheStore on RestServiceConfig and make a successful request', async () => {

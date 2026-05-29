@@ -163,8 +163,6 @@ The `cacheStore` option enables per-service HTTP response caching via undici's b
 
 Any object implementing undici's `CacheStore` interface can be used.
 
-#### In-Memory Cache (Testing / Development)
-
 ```javascript
 import undici from 'undici';
 
@@ -183,36 +181,7 @@ const services = [
 ];
 ```
 
-#### Sharing a Cache Store Across Services
-
-```javascript
-import undici from 'undici';
-
-const sharedCache = new undici.cacheStores.MemoryCacheStore();
-
-const services = [
-  {
-    id: 'fetchUser',
-    service: {
-      type: 'rest',
-      url: 'https://api.example.com/users/1',
-      method: 'GET',
-      cacheStore: sharedCache,
-    }
-  },
-  {
-    id: 'fetchProfile',
-    service: {
-      type: 'rest',
-      url: 'https://api.example.com/users/1/profile',
-      method: 'GET',
-      cacheStore: sharedCache,
-    }
-  }
-];
-```
-
-> **Note:** Caching only applies when the server's response includes cache-friendly headers (e.g. `Cache-Control: max-age=300`). Responses without caching headers will not be stored.
+> **Note:** Caching only applies when the server's response includes cache-friendly headers (e.g. `Cache-Control: max-age=300`).
 
 ## Response Handling
 

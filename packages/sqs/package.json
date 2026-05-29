@@ -1,6 +1,6 @@
 {
   "name": "@workflow-stack/sqs",
-  "version": "0.7.0",
+  "version": "0.2.0",
   "description": "SQS plugin for @workflow-stack/core - AWS SQS message publishing orchestration",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -44,7 +44,7 @@
   "author": "Rahul Radhakrishnan",
   "license": "MIT",
   "peerDependencies": {
-    "@workflow-stack/core": "^0.1.0"
+    "@workflow-stack/core": "^0.2.0"
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.700.0",

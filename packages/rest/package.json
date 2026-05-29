@@ -1,6 +1,6 @@
 {
   "name": "@workflow-stack/rest",
-  "version": "0.7.1",
+  "version": "0.2.0",
   "description": "REST plugin for @workflow-stack/core - HTTP service orchestration using Undici",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -43,9 +43,10 @@
   "author": "Rahul Radhakrishnan",
   "license": "MIT",
   "peerDependencies": {
-    "@workflow-stack/core": "^0.1.0",
+    "@workflow-stack/core": "^0.2.0",
     "undici": "^8.0.0"
   },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "^20.0.0",
     "borp": "^0.21.0",

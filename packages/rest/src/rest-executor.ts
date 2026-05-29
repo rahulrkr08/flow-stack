@@ -132,7 +132,7 @@ export async function executeRestService(
     }
 
     const processingTime = Date.now() - startTime;
-    emitServiceComplete(serviceId, 'rest', config, processingTime, response.statusCode, undefined, context);
+    emitServiceComplete(serviceId, 'rest', config, context, processingTime, response.statusCode);
 
     return {
       status: response.statusCode,
@@ -146,7 +146,7 @@ export async function executeRestService(
     };
   } catch (error: any) {
     const processingTime = Date.now() - startTime;
-    emitServiceError(serviceId, 'rest', config, processingTime, error, context);
+    emitServiceError(serviceId, 'rest', config, context, processingTime, error);
 
     // If fallback is configured, return it
     if (config.fallback) {

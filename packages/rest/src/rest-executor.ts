@@ -1,4 +1,4 @@
-import { request as undiciRequest, interceptors, Agent } from 'undici';
+import { request as undiciRequest, interceptors, getGlobalDispatcher } from 'undici';
 import type { ServiceResult, OrchestrationContext } from '@workflow-stack/core';
 import { emitServiceStart, emitServiceComplete, emitServiceError } from '@workflow-stack/core';
 import type { RestServiceConfig } from './types.js';
@@ -72,32 +72,14 @@ export async function executeRestService(
       options.body = body;
     }
 
-    // Collect interceptors to compose. If any are present, compose them onto a
-    // fresh Agent so they have a real undici Dispatcher to work with (the global
-    // dispatcher may be a mock in test environments).
     const composedInterceptors: any[] = [];
-
-    if (config.oidc) {
-      // @ts-expect-error types missing
-      const { createOidcInterceptor } = await import('undici-oidc-interceptor');
-      // urls tells the interceptor which origins to attach the Bearer token to.
-      // Default to the origin of the request URL so no extra config is needed.
-      const targetOrigin = new URL(config.url).origin;
-      composedInterceptors.push(createOidcInterceptor({
-        clientId: config.oidc.clientId,
-        clientSecret: config.oidc.clientSecret,
-        scope: config.oidc.scope,
-        idpTokenUrl: config.oidc.idpTokenUrl,
-        urls: config.oidc.urls ?? [targetOrigin],
-      }));
-    }
 
     if (config.cacheStore) {
       composedInterceptors.push(interceptors.cache({ store: config.cacheStore as any }));
     }
 
     if (composedInterceptors.length > 0) {
-      options.dispatcher = new Agent({ allowH2: false }).compose(composedInterceptors);
+      options.dispatcher = getGlobalDispatcher().compose(composedInterceptors);
     }
 
     // Execute HTTP request

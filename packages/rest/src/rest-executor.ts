@@ -72,14 +72,10 @@ export async function executeRestService(
       options.body = body;
     }
 
-    const composedInterceptors: any[] = [];
-
     if (config.cacheStore) {
-      composedInterceptors.push(interceptors.cache({ store: config.cacheStore as any }));
-    }
-
-    if (composedInterceptors.length > 0) {
-      options.dispatcher = getGlobalDispatcher().compose(composedInterceptors);
+      options.dispatcher = getGlobalDispatcher().compose(
+        interceptors.cache({ store: config.cacheStore as any })
+      );
     }
 
     // Execute HTTP request
@@ -136,7 +132,7 @@ export async function executeRestService(
     }
 
     const processingTime = Date.now() - startTime;
-    emitServiceComplete(serviceId, 'rest', config, context, processingTime, response.statusCode);
+    emitServiceComplete(serviceId, 'rest', config, processingTime, response.statusCode, undefined, context);
 
     return {
       status: response.statusCode,
@@ -150,7 +146,7 @@ export async function executeRestService(
     };
   } catch (error: any) {
     const processingTime = Date.now() - startTime;
-    emitServiceError(serviceId, 'rest', config, context, processingTime, error);
+    emitServiceError(serviceId, 'rest', config, processingTime, error, context);
 
     // If fallback is configured, return it
     if (config.fallback) {

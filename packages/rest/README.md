@@ -159,11 +159,9 @@ All REST services will then pick up the interceptor automatically without any pe
 
 ### HTTP Response Caching with `cacheStore`
 
-The `cacheStore` option enables HTTP response caching via undici's built-in [cache interceptor](https://undici.nodejs.org/#/docs/api/CacheStore). When provided, responses with appropriate `Cache-Control` headers are stored and served from the cache on subsequent requests, avoiding redundant network calls.
+The `cacheStore` option enables per-service HTTP response caching via undici's built-in [cache interceptor](https://undici.nodejs.org/#/docs/api/CacheStore). When provided, responses with appropriate `Cache-Control` headers are stored and served from the cache on subsequent requests.
 
 Any object implementing undici's `CacheStore` interface can be used.
-
-#### In-Memory Cache (Testing / Development)
 
 ```javascript
 import undici from 'undici';
@@ -181,42 +179,9 @@ const services = [
     }
   }
 ];
-
-const result = await runOrchestration(services, {});
-// Subsequent calls with the same config will be served from cache
-// if the response includes a Cache-Control header (e.g. max-age=300)
 ```
 
-#### Sharing a Cache Store Across Services
-
-```javascript
-import undici from 'undici';
-
-const sharedCache = new undici.cacheStores.MemoryCacheStore();
-
-const services = [
-  {
-    id: 'fetchUser',
-    service: {
-      type: 'rest',
-      url: 'https://api.example.com/users/1',
-      method: 'GET',
-      cacheStore: sharedCache,
-    }
-  },
-  {
-    id: 'fetchProfile',
-    service: {
-      type: 'rest',
-      url: 'https://api.example.com/users/1/profile',
-      method: 'GET',
-      cacheStore: sharedCache,
-    }
-  }
-];
-```
-
-> **Note:** Caching only applies when the server's response includes cache-friendly headers (e.g. `Cache-Control: max-age=300`). Responses without caching headers will not be stored.
+> **Note:** Caching only applies when the server's response includes cache-friendly headers (e.g. `Cache-Control: max-age=300`).
 
 ## Response Handling
 

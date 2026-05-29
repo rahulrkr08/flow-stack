@@ -5,7 +5,7 @@ REST/HTTP plugin for @workflow-stack/core - HTTP service orchestration using Und
 ## Installation
 
 ```bash
-npm install @workflow-stack/core @workflow-stack/rest
+npm install @workflow-stack/core @workflow-stack/rest undici
 ```
 
 ## Quick Start
@@ -49,12 +49,6 @@ interface RestServiceConfig {
   body?: any;
   timeout?: number;
   cacheStore?: CacheStore;
-  oidc?: {
-    clientId: string;
-    clientSecret: string;
-    scope?: string;
-    tokenUrl?: string;
-  };
   fallback?: {
     status?: number | null;
     data: any;
@@ -151,35 +145,23 @@ const services = [
 }
 ```
 
-### OIDC Authentication
+### Global Interceptors
+
+Cross-cutting concerns (authentication, retries, logging, etc.) should be applied at the undici global dispatcher level in your application, not per-service. The rest plugin composes any service-level interceptors (e.g. `cacheStore`) on top of the current global dispatcher, so global interceptors are always preserved.
 
 ```javascript
-{
-  id: 'secureApi',
-  service: {
-    type: 'rest',
-    url: 'https://api.example.com/protected',
-    method: 'GET',
-    oidc: {
-      clientId: '{env.OIDC_CLIENT_ID}',
-      clientSecret: '{env.OIDC_CLIENT_SECRET}',
-      scope: 'openid profile',
-      tokenUrl: 'https://auth.example.com/oauth/token'
-    }
-  }
-}
+import { Agent, setGlobalDispatcher } from 'undici';
+
+setGlobalDispatcher(new Agent().compose(myInterceptor));
 ```
+
+All REST services will then pick up the interceptor automatically without any per-service configuration.
 
 ### HTTP Response Caching with `cacheStore`
 
-The `cacheStore` option enables HTTP response caching via undici's built-in [cache interceptor](https://undici.nodejs.org/#/docs/api/CacheStore). When provided, responses with appropriate `Cache-Control` headers are stored and served from the cache on subsequent requests, avoiding redundant network calls.
+The `cacheStore` option enables per-service HTTP response caching via undici's built-in [cache interceptor](https://undici.nodejs.org/#/docs/api/CacheStore). When provided, responses with appropriate `Cache-Control` headers are stored and served from the cache on subsequent requests.
 
-Any object implementing undici's `CacheStore` interface can be used:
-
-- **`MemoryCacheStore`** (from `undici`) — in-memory cache, useful for testing and short-lived processes.
-- **`RedisCacheStore`** (from `undici-cache-redis`) — Redis-backed cache for production use across multiple instances.
-
-#### In-Memory Cache (Testing / Development)
+Any object implementing undici's `CacheStore` interface can be used.
 
 ```javascript
 import undici from 'undici';
@@ -197,70 +179,9 @@ const services = [
     }
   }
 ];
-
-const result = await runOrchestration(services, {});
-// Subsequent calls with the same config will be served from cache
-// if the response includes a Cache-Control header (e.g. max-age=300)
 ```
 
-#### Redis Cache (Production)
-
-```bash
-npm install undici-cache-redis
-```
-
-```javascript
-import { RedisCacheStore } from 'undici-cache-redis';
-
-const store = new RedisCacheStore({
-  clientOpts: { host: 'localhost', port: 6379 }
-});
-
-const services = [
-  {
-    id: 'fetchUser',
-    service: {
-      type: 'rest',
-      url: 'https://api.example.com/users/1',
-      method: 'GET',
-      cacheStore: store,
-    }
-  }
-];
-```
-
-#### Sharing a Cache Store Across Services
-
-You can share a single store instance across multiple services so they benefit from the same cache:
-
-```javascript
-import undici from 'undici';
-
-const sharedCache = new undici.cacheStores.MemoryCacheStore();
-
-const services = [
-  {
-    id: 'fetchUser',
-    service: {
-      type: 'rest',
-      url: 'https://api.example.com/users/1',
-      method: 'GET',
-      cacheStore: sharedCache,
-    }
-  },
-  {
-    id: 'fetchProfile',
-    service: {
-      type: 'rest',
-      url: 'https://api.example.com/users/1/profile',
-      method: 'GET',
-      cacheStore: sharedCache,
-    }
-  }
-];
-```
-
-> **Note:** Caching only applies when the server's response includes cache-friendly headers (e.g. `Cache-Control: max-age=300`). Responses without caching headers will not be stored.
+> **Note:** Caching only applies when the server's response includes cache-friendly headers (e.g. `Cache-Control: max-age=300`).
 
 ## Response Handling
 

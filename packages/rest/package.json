@@ -44,17 +44,9 @@
   "license": "MIT",
   "peerDependencies": {
     "@workflow-stack/core": "^0.1.0",
-    "undici-cache-redis": "^1.0.0"
+    "undici": "^8.0.0"
   },
-  "peerDependenciesMeta": {
-    "undici-cache-redis": {
-      "optional": true
-    }
-  },
-  "dependencies": {
-    "undici": "^8.1.0",
-    "undici-oidc-interceptor": "^0.8.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "^20.0.0",
     "borp": "^0.21.0",

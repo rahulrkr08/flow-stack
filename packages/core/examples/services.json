@@ -41,14 +41,12 @@
         "type": "rest",
         "url": "https://api.example.com/workspaces",
         "method": "GET",
+        "headers": {
+          "Authorization": "Bearer {authenticate.body.token}"
+        },
         "query": {
           "userId": "{authenticate.body.userId}",
           "limit": "10"
-        },
-        "oidc": {
-          "clientId": "{env.OIDC_CLIENT_ID}",
-          "clientSecret": "{env.OIDC_CLIENT_SECRET}",
-          "scope": "{env.OIDC_SCOPE}"
         }
       }
     },
